@@ -1,0 +1,102 @@
+# Hermes Agent + egress-прокси. Схема перенесена с рабочего сервера (сентябрь 2026).
+# Лежит в /docker/hermes-agent/ рядом с .env, data/ и egress/squid.conf.
+#
+# Что здесь защищает:
+# - hermes-agent сидит только во внутренней сети agent_internal (internal: true) —
+#   прямого выхода в интернет у него нет, всё идёт через egress-proxy (squid):
+#   только HTTPS, без приватных сетей, metadata, голых IP и сервисов для слива данных.
+# - Порт 4860 отдан через expose, а не ports: снаружи он не опубликован,
+#   и Docker не может обойти UFW.
+# - Веб-интерфейс через Traefik по умолчанию выключен (HERMES_WEB_VIA_VPN=false).
+#   Если включить — пускает только адреса из VPN_SOURCE_RANGE (VPN на этом же сервере),
+#   для остального интернета Traefik отвечает 403.
+services:
+  hermes-agent:
+    image: ghcr.io/hostinger/hvps-hermes-agent@sha256:7956ad1f365ad2ce4454673cb3f3ab31798703b2a3ea1d1329c509250f974bee
+    restart: unless-stopped
+    security_opt:
+    - no-new-privileges:true
+    pids_limit: 512
+    mem_limit: 4g
+    cpus: 1.5
+    expose:
+    - '4860'
+    labels:
+    - traefik.enable=${HERMES_WEB_VIA_VPN:-false}
+    - traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_PROJECT_NAME}.${TRAEFIK_HOST}`)
+    - traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure
+    - traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=letsencrypt
+    - traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=${COMPOSE_PROJECT_NAME}-vpn-only
+    - traefik.http.middlewares.${COMPOSE_PROJECT_NAME}-vpn-only.ipallowlist.sourcerange=${VPN_SOURCE_RANGE:-172.16.0.0/12}
+    - traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=4860
+    env_file:
+    - .env
+    volumes:
+    - ./data:/opt/data
+    environment:
+      HTTP_PROXY: http://egress-proxy:3128
+      HTTPS_PROXY: http://egress-proxy:3128
+      ALL_PROXY: http://egress-proxy:3128
+      http_proxy: http://egress-proxy:3128
+      https_proxy: http://egress-proxy:3128
+      all_proxy: http://egress-proxy:3128
+      NO_PROXY: 127.0.0.1,localhost,::1
+      no_proxy: 127.0.0.1,localhost,::1
+    networks:
+      agent_internal:
+        # Постоянный адрес — на него смотрит SSH-туннель к веб-интерфейсу.
+        ipv4_address: 172.31.250.10
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+    depends_on:
+      egress-proxy:
+        condition: service_healthy
+  egress-proxy:
+    image: ubuntu/squid@sha256:8a3baed477e2c282ab8aa5edad442f69873246964f225c5c2ae8364b6610963c
+    restart: unless-stopped
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    cap_add:
+    - SETGID
+    - SETUID
+    read_only: true
+    pids_limit: 128
+    mem_limit: 256m
+    cpus: 0.5
+    tmpfs:
+    - /run:rw,noexec,nosuid,size=4m
+    - /tmp:rw,noexec,nosuid,size=16m,mode=1777
+    - /var/log/squid:rw,noexec,nosuid,size=16m,uid=13,gid=13,mode=0750
+    - /var/spool/squid:rw,noexec,nosuid,size=32m,uid=13,gid=13,mode=0750
+    volumes:
+    - ./egress/squid.conf:/etc/squid/squid.conf:ro
+    networks:
+      egress_external:
+        gw_priority: 1
+      agent_internal:
+        aliases:
+        - egress-proxy
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pid=$$(cat /run/squid.pid 2>/dev/null) && test -n "$$pid" && kill -0 "$$pid"
+        && bash -c 'exec 3<>/dev/tcp/127.0.0.1/3128; exec 3>&-'
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    stop_grace_period: 10s
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+networks:
+  agent_internal:
+    internal: true
+    ipam:
+      config:
+      - subnet: 172.31.250.0/24
+  egress_external:
+    driver: bridge

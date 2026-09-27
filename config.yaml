@@ -1,0 +1,85 @@
+# Настройки помощника из установочного набора.
+# При обновлении набора этот файл НЕ перезаписывается (правки клиента сохраняются),
+# кроме случая hermes profile update --force-config.
+
+# Основная модель чата - GPT-6 Sol (подписка ChatGPT, вход через hermes auth add openai-codex).
+model:
+  provider: openai-codex
+  default: gpt-6-sol
+
+# Быстрый ручной выбор по ролям (навык model-orchestration): /model strong (стратегии), /model main
+# (обычная работа), /model light (простое). Старые имена astra/sol/luna тоже работают.
+# Фича pool (шлюз подписок) и tools/use-claude.sh переписывают роли на свои модели.
+model_aliases:
+  strong:
+    model: gpt-6-astra
+    provider: openai-codex
+  main:
+    model: gpt-6-sol
+    provider: openai-codex
+  light:
+    model: gpt-6-luna
+    provider: openai-codex
+  astra:
+    model: gpt-6-astra
+    provider: openai-codex
+  sol:
+    model: gpt-6-sol
+    provider: openai-codex
+  luna:
+    model: gpt-6-luna
+    provider: openai-codex
+
+# Служебные задачи - на самой экономной модели Luna.
+auxiliary:
+  compression:
+    provider: openai-codex
+    model: gpt-6-luna
+  title_generation:
+    provider: openai-codex
+    model: gpt-6-luna
+  approval:
+    provider: openai-codex
+    model: gpt-6-luna
+  curator:
+    provider: openai-codex
+    model: gpt-6-luna
+  skills_hub:
+    provider: openai-codex
+    model: gpt-6-luna
+  mcp:
+    provider: openai-codex
+    model: gpt-6-luna
+  vision:
+    provider: openai-codex
+    model: gpt-6-luna
+  background_review:
+    provider: openai-codex
+    model: gpt-6-luna
+  goal_judge:
+    provider: openai-codex
+    model: gpt-6-luna
+  memory_query_rewrite:
+    provider: openai-codex
+    model: gpt-6-luna
+
+# Помощники-исполнители (сбор данных, поиск) - тоже на Luna.
+delegation:
+  provider: openai-codex
+  model: gpt-6-luna
+
+timezone: Europe/Moscow
+
+display:
+  language: ru
+
+# Голосовые: расшифровка на самом сервере, по-русски.
+# Если сервер слабый или расшифровка медленная - добавить GROQ_API_KEY и поставить provider: groq.
+stt:
+  enabled: true
+  provider: local
+  language: ru
+  local:
+    model: small
+
+# Плагины приложения включает tools/features.sh (фичи limits и attention-ping).

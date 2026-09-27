@@ -1,0 +1,4 @@
+SCHEDULE='0 10 1 * *'
+SCRIPT='brain_health.py'
+NO_AGENT=0
+SKILLS='second-brain'

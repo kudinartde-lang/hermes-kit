@@ -1,0 +1,16 @@
+# Репозиторий набора: только шаблоны и код. Никаких ключей и личных данных.
+.env
+.env.*
+!.env.EXAMPLE
+auth.json
+*.key
+*.pem
+id_*
+__pycache__/
+*.pyc
+.DS_Store
+memories/
+sessions/
+logs/
+state.db*
+local/

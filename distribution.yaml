@@ -1,0 +1,26 @@
+# Установочный набор помощника Hermes. Ставится командой:
+#   hermes profile install <адрес репозитория> --name <имя-профиля>
+# Ключи и логины у каждого клиента свои - в репозитории их нет.
+name: assistant
+version: 0.2.0
+description: "Личный помощник для владельца и команды. Основа + фичи на выбор (tools/features.sh): шлюз подписок, второй мозг, календарь, сторожа, бэкап и др."
+hermes_requires: ">=0.21.0"
+author: "Установочный набор"
+license: "Proprietary"
+
+# Какие файлы принадлежат набору (обновляются командой hermes profile update).
+# Только основа. Фичи (навыки, плагины, скрипты, расписание) ставит и обновляет tools/features.sh
+# по выбору человека - поэтому cron/, skills/, plugins/, scripts/ здесь НЕ перечислены:
+# иначе обновление затёрло бы выбранное.
+distribution_owned:
+  - SOUL.md
+  - config.yaml
+  - distribution.yaml
+
+env_requires:
+  - name: TELEGRAM_BOT_TOKEN
+    description: "Токен своего Telegram-бота этого человека (BotFather). Вводится через hermes -p <имя> gateway setup"
+    required: false
+  - name: GROQ_API_KEY
+    description: "Необязательно: быстрая расшифровка голосовых (иначе расшифровка на самом сервере)"
+    required: false

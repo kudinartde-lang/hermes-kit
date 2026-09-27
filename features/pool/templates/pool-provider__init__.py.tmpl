@@ -1,0 +1,18 @@
+from providers import register_provider
+from providers.base import ProviderProfile
+
+# Порядок строк = порядок моделей в списке выбора приложения.
+# Файл пишет tools/features.sh (фича pool) по тому, что реально есть в шлюзе.
+# Модели шлюза, которых здесь нет, всё равно появятся - следом за этими.
+POOL_MODELS = (__POOL_MODELS__)
+
+register_provider(ProviderProfile(
+    name="pool",
+    display_name="Pool",
+    api_mode="chat_completions",
+    auth_type="api_key",
+    base_url="__POOL_URL__",
+    env_vars=("CLIPROXY_KEY",),
+    fallback_models=tuple(POOL_MODELS) if isinstance(POOL_MODELS, tuple) else (POOL_MODELS,),
+    supports_prompt_cache_key=True,
+))

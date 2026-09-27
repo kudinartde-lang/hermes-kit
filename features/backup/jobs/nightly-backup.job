@@ -1,0 +1,6 @@
+SCHEDULE='0 3 * * *'
+SCRIPT='git-backup.py'
+NO_AGENT=1
+SKILLS=''
+PAUSE_UNLESS='[ -d "$ROOT/.git" ]'
+PAUSE_REASON='сначала tools/setup-backup.sh'

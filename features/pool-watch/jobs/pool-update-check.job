@@ -1,0 +1,4 @@
+SCHEDULE='10 10 * * 1'
+SCRIPT='pool-update-check.sh'
+NO_AGENT=1
+SKILLS=''

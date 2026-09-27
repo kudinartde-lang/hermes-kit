@@ -1,0 +1,4 @@
+SCHEDULE='20 10 * * 1'
+SCRIPT='pool-model-watch.sh'
+NO_AGENT=1
+SKILLS=''

@@ -1,0 +1,4 @@
+SCHEDULE='40 3 * * *'
+SCRIPT='pool-backup.sh'
+NO_AGENT=1
+SKILLS=''

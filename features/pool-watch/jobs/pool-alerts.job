@@ -1,0 +1,4 @@
+SCHEDULE='55 8 * * *'
+SCRIPT='pool-alerts.sh'
+NO_AGENT=1
+SKILLS=''

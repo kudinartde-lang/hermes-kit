@@ -1,0 +1,4 @@
+SCHEDULE='0 9 * * 0-5'
+SCRIPT=''
+NO_AGENT=0
+SKILLS='daily-money-plan team-brain'

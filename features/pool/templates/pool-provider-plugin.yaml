@@ -1,0 +1,4 @@
+name: pool-provider
+kind: model-provider
+version: 1.0.0
+description: Единый пул подписок с фиксированным порядком моделей

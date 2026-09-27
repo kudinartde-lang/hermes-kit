@@ -1,0 +1,4 @@
+SCHEDULE='every 2m'
+SCRIPT='pool-watchdog.sh'
+NO_AGENT=1
+SKILLS=''

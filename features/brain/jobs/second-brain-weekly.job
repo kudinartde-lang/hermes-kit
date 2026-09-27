@@ -1,0 +1,4 @@
+SCHEDULE='0 20 * * 0'
+SCRIPT=''
+NO_AGENT=0
+SKILLS='second-brain'

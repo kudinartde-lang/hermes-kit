@@ -1,0 +1,4 @@
+SCHEDULE='every 5m'
+SCRIPT='server_monitor.py'
+NO_AGENT=1
+SKILLS=''
