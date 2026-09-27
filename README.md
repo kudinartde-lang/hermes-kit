@@ -10,8 +10,8 @@
 | Шлюз подписок | `pool` | Claude, ChatGPT, Kimi и другие подписки в одном окне, модели любой из них в одном списке | войти в свои подписки Claude/ChatGPT через браузер | [hermes-pool.zip](zips/hermes-pool.zip) |
 | Выбор модели под задачу | `models` | Помощник сам берёт сильную модель для важного и экономную для простого | ничего | [hermes-models.zip](zips/hermes-models.zip) |
 | Сторож шлюза | `pool-watch` | Поднимает упавший шлюз, утром отчёт по лимитам, тревоги, копия входов, новые модели и версии | ничего (шлюз ставится сам) | [hermes-pool-watch.zip](zips/hermes-pool-watch.zip) |
-| Лимиты в процентах | `limits` | Рядом с выбором модели - сколько осталось у GPT и Claude | ничего | [hermes-limits.zip](zips/hermes-limits.zip) |
-| Сигнал "жду ответа" | `attention-ping` | Звук и уведомление в приложении, когда помощник ждёт человека | ничего | [hermes-attention-ping.zip](zips/hermes-attention-ping.zip) |
+| Лимиты в процентах | `limits` | Рядом с выбором модели - сколько осталось у GPT и Claude | проще без архива - см. ниже "Значки в приложении" | [hermes-limits.zip](zips/hermes-limits.zip) |
+| Сигнал "жду ответа" | `attention-ping` | Звук и уведомление в приложении, когда помощник ждёт человека | проще без архива - см. ниже "Значки в приложении" | [hermes-attention-ping.zip](zips/hermes-attention-ping.zip) |
 | Второй мозг | `brain` | Общая база компании + AGENTS.md человека, проверки базы раз в неделю и раз в месяц | ничего | [hermes-brain.zip](zips/hermes-brain.zip) |
 | План дня к деньгам | `money-plan` | Каждое утро (вс-пт, 9:00) план дня с одной главной задачей | ничего (второй мозг ставится сам) | [hermes-money-plan.zip](zips/hermes-money-plan.zip) |
 | Календарь | `calendar` | Человек диктует задачу - помощник заносит её в Google Календарь | один раз войти в свой Google | [hermes-calendar.zip](zips/hermes-calendar.zip) |
@@ -30,6 +30,21 @@
 
 В наборе нет ничьих ключей и личных данных - только шаблоны. У каждой компании свои
 аккаунты, ключи и карта.
+
+
+## Значки в приложении (Лимиты, Сигнал "жду ответа") - без архива, прямо из приложения
+
+Эти две фичи видны в самом приложении Hermes, поэтому их удобнее ставить оттуда - одной кнопкой
+(ставится всё сразу: и часть на сервере, и значок на ноутбуке):
+
+1. В приложении Hermes: Capabilities -> Plugins -> кнопка **Install from Git**.
+2. Вставить ссылку, нажать **Review repository**, потом **Install** (галочки оставить как есть).
+3. Если значок не появился - перезапустить приложение.
+
+| Фича | Ссылка для Install from Git |
+|---|---|
+| Лимиты в процентах | https://github.com/kudinartde-lang/hermes-kit/tree/main/features/limits/plugins/codex-limits |
+| Сигнал "жду ответа" | https://github.com/kudinartde-lang/hermes-kit/tree/main/features/attention-ping/plugins/attention-ping |
 
 ## Шаг 0. Основа - защищённый сервер с Hermes (всегда)
 

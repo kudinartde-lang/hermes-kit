@@ -42,6 +42,31 @@ echo "== Ставлю: $CHAIN"
 # основной помощник - единственный на своём сервере, поэтому он и "хранитель сервера"
 bash "$KIT/tools/install-main.sh" --server-keeper --on "$CHAIN"
 
+# Значок в приложении (часть "для компьютера"). Приложение Hermes берёт такие файлы только со СВОЕГО
+# компьютера (~/.hermes/desktop-plugins/<id>/plugin.js). Кладём сюда - хватает, если приложение на этой же машине.
+# Если помощник на сервере, а приложение на ноутбуке - нужен один шаг на ноутбуке (печатаем ниже).
+TREE="https://github.com/kudinartde-lang/hermes-kit/tree/main"
+DESK=""
+for c in $(echo "$CHAIN" | tr ',' ' '); do
+  for pj in "$KIT"/features/"$c"/plugins/*/desktop/plugin.js; do
+    [ -f "$pj" ] || continue
+    pdir="$(dirname "$(dirname "$pj")")"; pid="$(basename "$pdir")"
+    mkdir -p "$ROOT/desktop-plugins/$pid" && cp "$pj" "$ROOT/desktop-plugins/$pid/plugin.js"
+    DESK="$DESK
+      $TREE/${pdir#"$KIT"/}"
+  done
+done
+if [ -n "$DESK" ]; then
+  echo
+  echo "== ВАЖНО: у этой фичи есть значок в приложении Hermes."
+  echo "   Если приложение Hermes открыто на ЭТОМ ЖЕ компьютере - всё уже на месте."
+  echo "   Если помощник на сервере, а приложение на ноутбуке (обычный случай) - значок ставится"
+  echo "   из самого приложения, без Терминала и без скачивания файлов:"
+  echo "   1) В приложении Hermes открыть Capabilities -> Plugins -> кнопка Install from Git."
+  echo "   2) Вставить ссылку и нажать Review repository, потом Install (галочки не трогать):$DESK"
+  echo "   3) Если значок не появился - перезапустить приложение Hermes."
+  echo "   ПОМОЩНИКУ: перешли хозяину этот блок дословно, со ссылкой."
+fi
 echo
 echo "== Готово. Что дальше - $KIT/features/$F/README.md"
 echo "   Чтобы помощник увидел новое: начать новый чат (/new). Если не видно - перезапустить приложение Hermes"
